@@ -1,0 +1,93 @@
+:root {
+  --color-fondo: #f7f4ef;
+  --color-superficie: #ffffff;
+  --color-texto: #2b2622;
+  --color-texto-suave: #5c534b;
+  --color-borde: #ddd4c8;
+  --color-primario: #6b4f3a;
+  --color-primario-hover: #553e2d;
+  --color-secundario: #ece4d8;
+  --color-exito: #2f6b4f;
+  --color-error: #a33a2c;
+  --color-peligro: #b3261e;
+  --color-foco: #1f5fbf;
+  --radio: 10px;
+  --sombra: 0 2px 8px rgba(43, 38, 34, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-texto);
+  background: var(--color-fondo);
+}
+
+h1,
+h2 {
+  margin: 0 0 0.5rem;
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: 1.75rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+}
+
+p {
+  margin: 0 0 0.75rem;
+}
+
+a {
+  color: var(--color-primario);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-foco);
+  outline-offset: 2px;
+}
+
+.contenedor {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+}
+
+.enlace-omitir {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  padding: 0.5rem 1rem;
+  background: var(--color-superficie);
+  z-index: 100;
+}
+
+.enlace-omitir:focus {
+  top: 1rem;
+}
+
+.encabezado-pagina {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
