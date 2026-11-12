@@ -1,7 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
 
-const DURACION_NOTIFICACION_MS = 4000;
-
 const NotificationContext = createContext(null);
 
 export function NotificationProvider({ children }) {
@@ -15,10 +13,12 @@ export function NotificationProvider({ children }) {
   const notificar = useCallback(
     (mensaje, tipo = "exito") => {
       const id = siguienteId.current++;
-      setNotificaciones((actuales) => [...actuales, { id, mensaje, tipo }]);
-      setTimeout(() => cerrar(id), DURACION_NOTIFICACION_MS);
+      setNotificaciones((actuales) => {
+        if (actuales.some((actual) => actual.mensaje === mensaje && actual.tipo === tipo)) return actuales;
+        return [...actuales.slice(-3), { id, mensaje, tipo }];
+      });
     },
-    [cerrar]
+    []
   );
 
   const valor = useMemo(

@@ -2,8 +2,11 @@ import Unidad from "../models/Unidad.js";
 import unidadRepository from "../repositories/UnidadRepository.js";
 import { Messages } from "../enums/Messages.js";
 import { BadRequestError, NotFoundError } from "../exceptions/AppError.js";
+import { reservaRepository } from "../repositories/gestionRepositories.js";
+import { exigir } from "../utils/validaciones.js";
 
-const camposPermitidos = ["nombre", "descripcion", "capacidad", "direccion", "disponible"];
+const camposRequeridos = ["nombre", "descripcion", "capacidad", "direccion", "disponible"];
+const camposPermitidos = [...camposRequeridos, "latitud", "longitud"];
 
 class UnidadService {
     getAll() { return unidadRepository.findAll(); }
@@ -20,12 +23,19 @@ class UnidadService {
             undefined, datos.nombre.trim(), datos.descripcion.trim(),
             datos.capacidad, datos.direccion.trim(), datos.disponible
         );
+        unidad.latitud = datos.latitud ?? null;
+        unidad.longitud = datos.longitud ?? null;
+        this.#validarUbicacion(unidad);
         return unidadRepository.create(unidad);
     }
 
     update(id, datos) {
-        this.getById(id);
+        const anterior = this.getById(id);
         this.#validarDatos(datos, false);
+        this.#validarUbicacion({ ...anterior, ...datos });
+        exigir(!reservaRepository.findAll().some((reserva) => reserva.unidadId === id
+            && reserva.estado !== "cancelada" && reserva.cantidadHuespedes > (datos.capacidad ?? anterior.capacidad)),
+        "La capacidad no puede ser menor a la cantidad de huéspedes de una reserva existente.");
         const actualizados = Object.fromEntries(
             Object.entries(datos).map(([campo, valor]) => [
                 campo, typeof valor === "string" ? valor.trim() : valor
@@ -35,6 +45,9 @@ class UnidadService {
     }
 
     delete(id) {
+        this.getById(id);
+        exigir(!reservaRepository.findAll().some((reserva) => reserva.unidadId === id),
+            "Esta unidad tiene reservas. Eliminá primero las reservas vinculadas.");
         const eliminada = unidadRepository.delete(id);
         if (!eliminada) throw new NotFoundError(Messages.UNIDAD_NOT_FOUND);
         return eliminada;
@@ -46,8 +59,8 @@ class UnidadService {
         }
         const claves = Object.keys(datos);
         const camposDesconocidos = claves.some((campo) => !camposPermitidos.includes(campo));
-        const camposRequeridos = completo ? camposPermitidos : claves;
-        const faltanCampos = camposRequeridos.some((campo) =>
+        const requeridos = completo ? camposRequeridos : claves;
+        const faltanCampos = requeridos.some((campo) =>
             !Object.prototype.hasOwnProperty.call(datos, campo)
         );
         if (claves.length === 0 || camposDesconocidos || faltanCampos) {
@@ -64,6 +77,13 @@ class UnidadService {
         ) {
             throw new BadRequestError(Messages.INVALID_DATA);
         }
+    }
+
+    #validarUbicacion({ latitud, longitud }) {
+        const sinUbicacion = latitud == null && longitud == null;
+        exigir(sinUbicacion || (typeof latitud === "number" && Number.isFinite(latitud) && Math.abs(latitud) <= 90
+            && typeof longitud === "number" && Number.isFinite(longitud) && Math.abs(longitud) <= 180),
+        "Ingresá latitud y longitud válidas, o dejá ambas vacías.");
     }
 }
 export default new UnidadService();

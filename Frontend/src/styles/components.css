@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.75rem 1.25rem;
+  padding: 1rem max(1.5rem, calc((100vw - 1132px) / 2));
   background: var(--color-superficie);
   border-bottom: 1px solid var(--color-borde);
 }
@@ -18,6 +18,13 @@
   font-weight: 700;
   color: var(--color-texto);
   text-decoration: none;
+}
+
+.encabezado__marca small {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--color-texto-suave);
 }
 
 .encabezado nav {
@@ -54,6 +61,7 @@
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
+  min-height: 44px;
   transition: background 0.15s ease;
 }
 
@@ -93,7 +101,7 @@
 /* Tarjetas y listados */
 .grilla {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr));
   gap: 1.25rem;
   list-style: none;
   margin: 0;
@@ -104,7 +112,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 1.25rem;
+  padding: 1.5rem;
   background: var(--color-superficie);
   border: 1px solid var(--color-borde);
   border-radius: var(--radio);
@@ -125,7 +133,17 @@
 
 .tarjeta .acciones {
   margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-borde);
 }
+
+.tarjeta__encabezado { margin-bottom: 1rem; }
+.tarjeta__descripcion { color: var(--color-texto-suave); margin-bottom: 1.5rem; white-space: pre-line; }
+.tarjeta .btn--peligro { background: transparent; color: var(--color-peligro); }
+.tarjeta .btn--peligro:hover:not(:disabled) { background: #f3dedb; }
+.filtros { display: flex; gap: 1rem; align-items: end; padding-block: 1.5rem; border-block: 1px solid var(--color-borde); }
+.filtros__busqueda { flex: 1; }
+.resultados { margin-block: 1.25rem; color: var(--color-texto-suave); font-size: 0.875rem; font-variant-numeric: tabular-nums; }
 
 .etiqueta {
   display: inline-block;
@@ -165,18 +183,23 @@
 
 .detalle__datos dd {
   margin: 0;
+  white-space: pre-line;
 }
 
 /* Formularios */
 .formulario {
   display: grid;
   gap: 1rem;
-  max-width: 560px;
-  padding: 1.5rem;
+  max-width: 720px;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
   background: var(--color-superficie);
   border: 1px solid var(--color-borde);
   border-radius: var(--radio);
 }
+
+.pagina-formulario h1 { margin-bottom: 2rem; }
+.formulario__campos { display: grid; gap: 1.5rem; min-width: 0; margin: 0; padding: 0; border: 0; }
+.formulario__campos .acciones { border-top: 1px solid var(--color-borde); padding-top: 1.5rem; justify-content: flex-end; }
 
 .formulario__resumen {
   padding: 0.75rem 1rem;
@@ -198,20 +221,23 @@
 }
 
 .campo input,
-.campo textarea {
+.campo textarea,
+.campo select {
   padding: 0.6rem 0.75rem;
   font: inherit;
   color: var(--color-texto);
   background: #fffdfa;
   border: 1px solid #b8ab9b;
   border-radius: 8px;
+  min-width: 0;
+  min-height: 44px;
 }
 
 .campo textarea {
   resize: vertical;
 }
 
-.campo input[aria-invalid="true"] {
+.campo [aria-invalid="true"] {
   border-color: var(--color-error);
 }
 
@@ -239,10 +265,12 @@
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
-  padding: 2.5rem 1rem;
+  padding: 4rem 1.5rem;
   text-align: center;
   color: var(--color-texto-suave);
 }
+
+.estado h2 { color: var(--color-texto); }
 
 .estado--error {
   color: var(--color-error);
@@ -276,13 +304,17 @@
 }
 
 .modal {
-  width: 100%;
+  width: calc(100% - 2rem);
   max-width: 440px;
   padding: 1.5rem;
   background: var(--color-superficie);
   border-radius: var(--radio);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--color-borde);
+  color: var(--color-texto);
 }
+
+.modal::backdrop { background: rgba(43, 38, 34, 0.5); }
 
 .modal .acciones {
   justify-content: flex-end;
@@ -291,7 +323,7 @@
 /* Notificaciones */
 .notificaciones {
   position: fixed;
-  top: 1rem;
+  bottom: 1rem;
   right: 1rem;
   display: flex;
   flex-direction: column;
@@ -307,7 +339,7 @@
   gap: 0.75rem;
   padding: 0.85rem 1rem;
   background: var(--color-superficie);
-  border-left: 6px solid var(--color-exito);
+  border: 1px solid var(--color-exito);
   border-radius: 8px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
@@ -317,7 +349,7 @@
 }
 
 .notificacion--error {
-  border-left-color: var(--color-error);
+  border-color: var(--color-error);
 }
 
 .notificacion__cerrar {
@@ -327,14 +359,79 @@
   line-height: 1;
   cursor: pointer;
   color: var(--color-texto-suave);
+  min-width: 44px;
+  min-height: 44px;
 }
 
 @media (max-width: 600px) {
   .encabezado {
-    justify-content: center;
+    align-items: flex-start;
   }
 
   .encabezado-pagina {
     align-items: flex-start;
   }
+
+  .filtros { flex-direction: column; align-items: stretch; }
+  .encabezado nav { flex-wrap: wrap; gap: 0.25rem; }
+  .encabezado-pagina { margin-bottom: 1.5rem; }
+  .contenedor { padding-inline: 1rem; }
+  .acciones .btn { flex-grow: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; border-color: var(--color-primario); }
+  .btn { transition: none; }
+}
+
+/* Gestión de estadías */
+.encabezado nav { flex-wrap: wrap; gap: 0.35rem; }
+.encabezado nav a { display: inline-flex; align-items: center; min-height: 44px; }
+.solo-lectores { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.campo__ayuda { font-size: 0.875rem; color: var(--color-texto-suave); margin: 0.5rem 0; max-width: 70ch; }
+.aviso-practica, .ayuda-seccion { padding: 1rem 1.25rem; border: 1px solid var(--color-borde); background: var(--color-secundario); border-radius: var(--radio); margin-bottom: 1.5rem; }
+.busqueda-gestion { max-width: 520px; }
+.tabla-contenedor { border: 1px solid var(--color-borde); border-radius: var(--radio); background: var(--color-superficie); overflow-x: auto; }
+.tabla-gestion { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.tabla-gestion th { text-align: left; color: var(--color-texto-suave); background: #f0ebe4; font-weight: 600; }
+.tabla-gestion th, .tabla-gestion td { padding: 1.1rem 1rem; vertical-align: top; }
+.tabla-gestion td { border-top: 1px solid var(--color-borde); max-width: 320px; overflow-wrap: anywhere; white-space: pre-line; font-variant-numeric: tabular-nums; }
+.tabla-gestion tbody tr:hover { background: #fffdfa; }
+.tabla-acciones { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.tabla-acciones .btn { font-size: 0.875rem; padding: 0.5rem 0.75rem; }
+.tabla-acciones .btn--peligro { background: transparent; color: var(--color-peligro); }
+.tabla-acciones .btn--peligro:hover:not(:disabled) { background: #f3dedb; }
+.etiqueta--neutra { background: var(--color-secundario); color: var(--color-texto-suave); }
+.formulario--gestion { margin-inline: auto; }
+.formulario--gestion h2 { font-size: 1.5rem; }
+.resumen-reserva { margin: 0; border-block: 1px solid var(--color-borde); padding-block: 1rem; display: grid; gap: 0.75rem; }
+.resumen-reserva div { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+.resumen-reserva dt { color: var(--color-texto-suave); }
+.resumen-reserva dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+.ubicacion-formulario { min-width: 0; border-block: 1px solid var(--color-borde); padding-block: 1.5rem; }
+.ubicacion__mapa { height: 330px; width: 100%; z-index: 0; border: 1px solid var(--color-borde); border-radius: var(--radio); background: var(--color-secundario); }
+.ubicacion__acciones { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-block: 0.75rem; }
+.ubicacion__mapa .leaflet-control-attribution { font-size: 11px; }
+.coordenadas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
+.detalle__ubicacion { margin-block: 2rem; }
+.detalle__ubicacion h2 { margin-bottom: 1rem; }
+.direcciones-resultados { list-style: none; padding: 0; margin: 1rem 0; border: 1px solid var(--color-borde); border-radius: var(--radio); overflow: hidden; }
+.direcciones-resultados li + li { border-top: 1px solid var(--color-borde); }
+.direcciones-resultados button { display: block; width: 100%; padding: 1rem; text-align: left; font: inherit; color: var(--color-texto); background: var(--color-superficie); border: 0; cursor: pointer; overflow-wrap: anywhere; }
+.direcciones-resultados button:hover { background: var(--color-secundario); }
+.direcciones-resultados button span { display: block; color: var(--color-primario); font-size: 0.875rem; margin-top: 0.35rem; }
+.direccion-busqueda > .btn { margin-top: 0.5rem; }
+
+@media (max-width: 760px) {
+  .encabezado { align-items: flex-start; }
+  .encabezado nav { width: 100%; }
+  .encabezado nav a { font-size: 0.875rem; }
+  .tabla-contenedor { border: 0; background: transparent; overflow: visible; }
+  .tabla-gestion, .tabla-gestion tbody { display: block; }
+  .tabla-gestion thead { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; }
+  .tabla-gestion tr { display: block; border: 1px solid var(--color-borde); border-radius: var(--radio); background: var(--color-superficie); margin-bottom: 1rem; padding: 0.5rem 1rem; }
+  .tabla-gestion td { display: block; max-width: none; border: 0; padding: 0.6rem 0; }
+  .tabla-gestion td::before { content: attr(data-label); display: block; font-size: 0.75rem; font-weight: 600; color: var(--color-texto-suave); margin-bottom: 0.25rem; }
+  .coordenadas { grid-template-columns: 1fr; }
+  .ubicacion__mapa { height: 280px; }
 }

@@ -5,6 +5,8 @@ import ConfirmDialog from "../components/ConfirmDialog.jsx";
 import ErrorState from "../components/ErrorState.jsx";
 import EtiquetaDisponibilidad from "../components/EtiquetaDisponibilidad.jsx";
 import LoadingState from "../components/LoadingState.jsx";
+import UbicacionMap from "../components/UbicacionMap.jsx";
+import { coordenadasValidas } from "../utils/ubicacion.js";
 import { useNotifications } from "../context/NotificationContext.jsx";
 import useAsync from "../hooks/useAsync.js";
 import { deleteUnidad, getUnidadById } from "../services/unidadService.js";
@@ -20,6 +22,7 @@ function UnidadDetallePage() {
   const [eliminando, setEliminando] = useState(false);
 
   const eliminar = async () => {
+    if (eliminando) return;
     setEliminando(true);
     try {
       await deleteUnidad(unidad.id);
@@ -57,12 +60,19 @@ function UnidadDetallePage() {
         </div>
       </dl>
 
+      <section className="detalle__ubicacion" aria-labelledby="detalle-ubicacion">
+        <h2 id="detalle-ubicacion">Ubicación</h2>
+        {coordenadasValidas(unidad.latitud, unidad.longitud)
+          ? <UbicacionMap latitud={unidad.latitud} longitud={unidad.longitud} direccion={unidad.direccion} />
+          : <p className="texto-suave">Esta unidad todavía no tiene un punto en el mapa. Podés agregarlo al editarla.</p>}
+      </section>
+
       <div className="acciones">
         <Button to={RUTAS.unidades} variante="secundario">
           Volver
         </Button>
         <Button to={RUTAS.editarUnidad(unidad.id)}>Editar</Button>
-        <Button variante="peligro" onClick={() => setConfirmando(true)}>
+        <Button variante="peligro" onClick={(evento) => { evento.currentTarget.focus(); setConfirmando(true); }}>
           Eliminar
         </Button>
       </div>

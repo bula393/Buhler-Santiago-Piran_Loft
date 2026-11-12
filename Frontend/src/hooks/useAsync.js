@@ -1,23 +1,29 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-// El fetcher se recrea en cada render, por eso la recarga depende solo de `dependencias`.
+// Solo la solicitud más reciente puede actualizar el estado de la pantalla.
 function useAsync(fetcher, dependencias = []) {
   const [estado, setEstado] = useState({ data: null, error: null, loading: true });
+  const fetcherRef = useRef(fetcher);
+  const solicitudRef = useRef(0);
+  fetcherRef.current = fetcher;
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const cargar = useCallback(async () => {
+    const solicitud = ++solicitudRef.current;
     setEstado((previo) => ({ ...previo, loading: true, error: null }));
     try {
-      const data = await fetcher();
-      setEstado({ data, error: null, loading: false });
+      const data = await fetcherRef.current();
+      if (solicitud === solicitudRef.current) setEstado({ data, error: null, loading: false });
     } catch (error) {
-      setEstado({ data: null, error, loading: false });
+      if (solicitud === solicitudRef.current) setEstado({ data: null, error, loading: false });
     }
-  }, dependencias);
+  }, []);
 
   useEffect(() => {
     cargar();
-  }, [cargar]);
+    return () => { solicitudRef.current += 1; };
+    // Los identificadores del recurso determinan cuándo volver a cargar.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cargar, ...dependencias]);
 
   return { ...estado, reload: cargar };
 }

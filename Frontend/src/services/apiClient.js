@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? "/api";
+const API_BASE_URL = (import.meta.env.VITE_API_URL || "/api").replace(/\/$/, "");
 
 export class ApiError extends Error {
   constructor(message, status) {
@@ -17,7 +17,7 @@ export async function request(ruta, { method = "GET", body } = {}) {
 
   let respuesta;
   try {
-    respuesta = await fetch(`${API_BASE_URL}${ruta}`, opciones);
+    respuesta = await fetch(`${API_BASE_URL}${ruta}`, { ...opciones, signal: AbortSignal.timeout(15000) });
   } catch {
     throw new ApiError("No se pudo conectar con el servidor. Verifique que el backend esté en ejecución.", 0);
   }

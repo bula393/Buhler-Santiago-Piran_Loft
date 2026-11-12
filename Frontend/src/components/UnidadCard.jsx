@@ -12,14 +12,15 @@ function UnidadCard({ unidad, onEliminar }) {
       </header>
       <p className="tarjeta__direccion">{unidad.direccion}</p>
       <p>{formatearCapacidad(unidad.capacidad)}</p>
+      <p className="tarjeta__descripcion">{unidad.descripcion || "Sin descripción."}</p>
       <div className="acciones">
         <Button to={RUTAS.detalleUnidad(unidad.id)} variante="secundario" aria-label={`Ver ${unidad.nombre}`}>
-          Ver
+          Ver detalle
         </Button>
         <Button to={RUTAS.editarUnidad(unidad.id)} variante="secundario" aria-label={`Editar ${unidad.nombre}`}>
           Editar
         </Button>
-        <Button variante="peligro" onClick={() => onEliminar(unidad)} aria-label={`Eliminar ${unidad.nombre}`}>
+        <Button variante="peligro" onClick={(evento) => { evento.currentTarget.focus(); onEliminar(unidad); }} aria-label={`Eliminar ${unidad.nombre}`}>
           Eliminar
         </Button>
       </div>

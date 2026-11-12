@@ -11,7 +11,9 @@ export const UNIDAD_VACIA = {
   descripcion: "",
   capacidad: "",
   direccion: "",
-  disponible: true
+  disponible: true,
+  latitud: "",
+  longitud: ""
 };
 
 export const MENSAJES = {

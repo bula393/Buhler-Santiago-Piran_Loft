@@ -10,13 +10,16 @@ function Header() {
       </a>
       <NavLink to={RUTAS.inicio} className="encabezado__marca">
         <img src={logo} alt="Logo de Loft" width="36" height="36" />
-        <span>Loft</span>
+        <span>Loft<small>Administración de alojamientos</small></span>
       </NavLink>
       <nav aria-label="Navegación principal">
-        <NavLink to={RUTAS.unidades} end>
+        <NavLink to={RUTAS.unidades}>
           Unidades
         </NavLink>
-        <NavLink to={RUTAS.nuevaUnidad}>Nueva unidad</NavLink>
+        <NavLink to="/reservas">Reservas</NavLink>
+        <NavLink to="/huespedes">Huéspedes</NavLink>
+        <NavLink to="/pagos">Pagos ficticios</NavLink>
+        <NavLink to="/resenas">Reseñas</NavLink>
       </nav>
     </header>
   );

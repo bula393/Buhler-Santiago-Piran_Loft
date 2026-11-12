@@ -14,7 +14,7 @@ function UnidadFormPage() {
   const esEdicion = id !== undefined;
   const navigate = useNavigate();
   const { notificar } = useNotifications();
-  const { data: unidad, error, loading } = useAsync(
+  const { data: unidad, error, loading, reload } = useAsync(
     () => (esEdicion ? getUnidadById(id) : Promise.resolve(null)),
     [id]
   );
@@ -36,10 +36,10 @@ function UnidadFormPage() {
   };
 
   if (loading) return <LoadingState mensaje={MENSAJES.cargandoUnidad} />;
-  if (error) return <ErrorState mensaje={error.message} />;
+  if (error) return <ErrorState mensaje={error.message} onReintentar={reload} />;
 
   return (
-    <section>
+    <section className="pagina-formulario">
       <h1>{esEdicion ? "Editar unidad" : "Nueva unidad"}</h1>
       <UnidadForm
         key={unidad?.id ?? "nueva"}
